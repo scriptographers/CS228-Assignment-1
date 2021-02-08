@@ -1,6 +1,6 @@
 # Problems
 
-## Mastermind:
+## Mastermind
 Mastermind is a two player game. There are `n` colors. Let `k < n` be a positive number.
   1. Player one chooses a hidden sequence of `k` colors (colors may repeat)
   2. The game proceeds iteratively as follows until player two has guessed the sequence correctly.  
