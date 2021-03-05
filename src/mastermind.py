@@ -26,11 +26,17 @@ def initialize(n_, k_):
     base_cons = []
     for i in range(k):
         base_cons.append(sum_to_one(vs[i]))
+
     s.add(And(base_cons))
 
 
 def put_first_player_response(red, white):
-    add_a_guess_solution(move, red, white)
+    global k, n, vs, move, s, guess_list, response_list
+
+    cons = PbEq([(vs[i][move[i]], 1) for i in range(k)], red)
+    guess_cons = white_cond(move, white)
+
+    s.add(And(guess_cons, cons))
 
 
 def get_second_player_move():
@@ -57,22 +63,12 @@ def get_a_solution():
                 if is_true(val):
                     sol[i] = j
 
-        print("yopj", sol)
+        # print("move:", sol)
         move = sol
         return sol
     else:
         print("some thing bad happened! no more moves!\n")
         raise Exception('Failed!')
-
-
-def add_a_guess_solution(guess, reds, whites):
-    global k, n, vs, move, s, guess_list, response_list
-
-    cons = PbEq([(vs[i][guess[i]], 1) for i in range(k)], reds)
-
-    guess_cons = white_cond(guess, whites)
-
-    s.add(And(guess_cons, cons))
 
 
 def white_cond(ls, whites):
