@@ -1,4 +1,4 @@
-from z3 import *
+from z3 import Bool, And, Or, Solver, sat, is_true
 
 graph = []
 vertices = []

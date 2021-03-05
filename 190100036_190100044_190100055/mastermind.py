@@ -1,5 +1,5 @@
-from z3 import And, Or, Not, PbGe, PbEq, Bool, Solver, sat, is_true
 import itertools
+from z3 import Bool, And, Or, Not, PbEq, PbGe, Solver, sat, is_true
 
 # Global variables
 k = 0
