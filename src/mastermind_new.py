@@ -9,6 +9,9 @@ s = Solver()
 guess_list = []
 response_list = []
 base_cons = []
+list_cons = []
+incorrect_move = []
+inc = 0
 
 
 def sum_to_one(ls):
@@ -20,7 +23,7 @@ def sum_to_one(ls):
 
 
 def initialize(n_, k_):
-    global k, n, vs, move, s, guess_list, response_list, base_cons
+    global k, n, vs, move, s, guess_list, response_list
     k = k_
     n = n_
     vs = [[Bool("e_{}_{}".format(i, j)) for j in range(n)] for i in range(k)]
@@ -28,22 +31,24 @@ def initialize(n_, k_):
     for i in range(k):
         base_cons.append(sum_to_one(vs[i]))
 
+    list_cons.append(And(base_cons))
     s.add(And(base_cons))
 
 
 def put_first_player_response(red, white):
-    global k, n, vs, move, s, guess_list, response_list, base_cons
+    global k, n, vs, move, s, guess_list, response_list
 
     response_list.append((red, white))
 
     cons = PbEq([(vs[i][move[i]], 1) for i in range(k)], red)
     guess_cons = white_cond(move, white)
 
+    list_cons.append(And(guess_cons, cons))
     s.add(And(guess_cons, cons))
 
 
 def get_second_player_move():
-    global k, n, vs, move, s, guess_list, response_list, base_cons
+    global k, n, vs, move, s, guess_list, response_list
     if len(guess_list) == 0:
         # start with random guess
         move = [0] * k
@@ -55,7 +60,7 @@ def get_second_player_move():
 
 
 def get_a_solution():
-    global k, n, vs, move, s, guess_list, response_list, base_cons
+    global k, n, vs, move, s, guess_list, response_list
     sol = [0] * k
     if s.check() == sat:
         m = s.model()
@@ -70,16 +75,18 @@ def get_a_solution():
         return sol
     else:
         s.reset()
-        s.add(And(base_cons))
-        guess_list = []
-        response_list = []
-        return [0] * k
-        print("some thing bad happened! no more moves!\n")
-        raise Exception('Failed!')
+        for i in range(len(list_cons)):
+            s.add(list_cons[i])
+        guess_list.pop()
+        response_list.pop()
+        inc += 1
+        return get_a_solution()
+        # print("some thing bad happened! no more moves!\n")
+        # raise Exception('Failed!')
 
 
 def white_cond(ls, whites):
-    global k, n, vs, move, s, guess_list, response_list, base_cons
+    global k, n, vs, move, s, guess_list, response_list
     l_white = []
     for i in range(len(ls)):
         B = False

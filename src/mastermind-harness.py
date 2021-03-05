@@ -38,6 +38,10 @@ if play_self:
 
 
 def get_auto_response(move):
+    l = random.randint(1, 10)
+    if (l < 6):
+        move = [0] * k
+        print("incorrect")
     assert(len(move) == k)
     reds = 0
     for i in range(k):
