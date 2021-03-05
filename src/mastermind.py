@@ -1,4 +1,4 @@
-from z3 import And, Or, Not, PbGe, Bool, Solver, sat, is_true
+from z3 import And, Or, Not, PbGe, PbEq, Bool, Solver, sat, is_true
 import itertools
 
 k = 0
@@ -67,85 +67,12 @@ def get_a_solution():
 
 def add_a_guess_solution(guess, reds, whites):
     global k, n, vs, move, s, guess_list, response_list
-    if reds == 0:
-        cons = correct_pos_0(guess)
-    elif reds == 1:
-        cons = correct_pos_1(guess)
-    elif reds == 2:
-        cons = correct_pos_2(guess)
-    elif reds == 3:
-        cons = correct_pos_3(guess)
-    elif reds == 4:
-        cons = correct_pos_4(guess)
+
+    cons = PbEq([(vs[i][guess[i]], 1) for i in range(k)], reds)
 
     guess_cons = white_cond(guess, whites)
 
     s.add(And(guess_cons, cons))
-
-
-def correct_pos_0(ls):
-    global k, n, vs, move, s, guess_list, response_list
-    A = True
-    for i in range(k):
-        A = And(A, Not(vs[i][ls[i]]))
-    return A
-
-
-def correct_pos_1(ls):
-    global k, n, vs, move, s, guess_list, response_list
-    l = []
-    a = vs[0][ls[0]]
-    b = vs[1][ls[1]]
-    c = vs[2][ls[2]]
-    d = vs[3][ls[3]]
-
-    l.append(And(a, Not(b), Not(c), Not(d)))
-    l.append(And(b, Not(a), Not(c), Not(d)))
-    l.append(And(c, Not(b), Not(a), Not(d)))
-    l.append(And(d, Not(b), Not(c), Not(a)))
-    l.append(And(a, Not(b)))
-    l.append(And(b, Not(a)))
-    return Or(l)
-
-
-def correct_pos_2(ls):
-    global k, n, vs, move, s, guess_list, response_list
-    l = []
-    a = vs[0][ls[0]]
-    b = vs[1][ls[1]]
-    c = vs[2][ls[2]]
-    d = vs[3][ls[3]]
-
-    l.append(And(a, b, Not(c), (Not(d))))
-    l.append(And(a, c, Not(b), (Not(d))))
-    l.append(And(c, b, Not(a), (Not(d))))
-    l.append(And(a, d, Not(b), (Not(c))))
-    l.append(And(d, b, Not(c), (Not(a))))
-    l.append(And(c, d, Not(b), (Not(a))))
-    return Or(l)
-
-
-def correct_pos_3(ls):
-    global k, n, vs, move, s, guess_list, response_list
-    l = []
-    a = vs[0][ls[0]]
-    b = vs[1][ls[1]]
-    c = vs[2][ls[2]]
-    d = vs[3][ls[3]]
-
-    l.append(And(a, b, c, (Not(d))))
-    l.append(And(a, b, d, (Not(c))))
-    l.append(And(a, d, c, (Not(b))))
-    l.append(And(d, b, c, (Not(a))))
-    return Or(l)
-
-
-def correct_pos_4(ls):
-    global k, n, vs, move, s, guess_list, response_list
-    A = True
-    for i in range(k):
-        A = And(A, vs[i][ls[i]])
-    return A
 
 
 def white_cond(ls, whites):

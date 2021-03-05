@@ -22,7 +22,7 @@ import mastermind
 import random
 n = random.randint(8, 12)
 k = random.randint(3, 7)
-k = 4
+
 # two modes of testing
 # play with self or play with a human
 #
